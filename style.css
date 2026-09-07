@@ -289,12 +289,21 @@ header {
 ========================= */
 
 .product-filter {
+    position: sticky;
+    top: 75px;
+    z-index: 900;
+
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 12px;
+
     margin-bottom: 45px;
+    padding: 12px 0;
+
     flex-wrap: wrap;
+
+    background: #ffffff;
 }
 
 .filter-btn {
@@ -585,9 +594,16 @@ header {
     /* FILTER */
 
     .product-filter {
-        gap: 8px;
+        position: sticky;
+        top: 65px;
+        z-index: 900;
 
+        gap: 8px;
         margin-bottom: 30px;
+
+        padding: 10px 0;
+
+        background: #ffffff;
     }
 
     .filter-btn {

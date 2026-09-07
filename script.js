@@ -134,7 +134,10 @@ filterButtons.forEach(function (button) {
 
     button.addEventListener("click", function () {
 
-        // Remove active
+        // =========================================
+        // REMOVE ACTIVE
+        // =========================================
+
         filterButtons.forEach(function (btn) {
 
             btn.classList.remove("active");
@@ -142,19 +145,32 @@ filterButtons.forEach(function (button) {
         });
 
 
-        // Add active
+        // =========================================
+        // ADD ACTIVE
+        // =========================================
+
         button.classList.add("active");
 
 
-        // Selected category
+        // =========================================
+        // SELECTED CATEGORY
+        // =========================================
+
         const selectedCategory =
             button.dataset.filter;
 
 
-        // All product cards
+        // =========================================
+        // ALL PRODUCT CARDS
+        // =========================================
+
         const productCards =
             document.querySelectorAll(".product-card");
 
+
+        // =========================================
+        // FILTER PRODUCTS
+        // =========================================
 
         productCards.forEach(function (product) {
 
@@ -178,6 +194,65 @@ filterButtons.forEach(function (button) {
             }
 
         });
+
+
+        // =========================================
+        // FIND FIRST VISIBLE PRODUCT
+        // =========================================
+
+        const firstVisibleProduct =
+            Array.from(productCards).find(function (product) {
+
+                return product.style.display !== "none";
+
+            });
+
+
+        // =========================================
+        // SCROLL TO FIRST PRODUCT
+        // =========================================
+
+        if (firstVisibleProduct) {
+
+            const header =
+                document.querySelector("header");
+
+            const productFilter =
+                document.querySelector(".product-filter");
+
+
+            const headerHeight =
+                header
+                    ? header.offsetHeight
+                    : 0;
+
+
+            const filterHeight =
+                productFilter
+                    ? productFilter.offsetHeight
+                    : 0;
+
+
+            const extraSpace = 15;
+
+
+            const targetPosition =
+                firstVisibleProduct.getBoundingClientRect().top +
+                window.scrollY -
+                headerHeight -
+                filterHeight -
+                extraSpace;
+
+
+            window.scrollTo({
+
+                top: targetPosition,
+
+                behavior: "smooth"
+
+            });
+
+        }
 
     });
 
