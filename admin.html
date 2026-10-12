@@ -162,9 +162,8 @@
                                 <div class="hero-upload">
                                     <img id="hero-preview" alt="">
                                     <div>
-                                        <input type="file" id="hero-file" accept="image/*" hidden>
-                                        <button type="button" class="btn btn-light" id="hero-pick"><i class="fa-solid fa-image"></i> Upload image</button>
-                                        <input name="heroImage" type="text" placeholder="…or paste an image URL">
+                                        <input name="heroImage" type="text" placeholder="image/hero.jpg  or  https://… (image URL)">
+                                        <p class="hint">Put the photo in the <b>image</b> folder of the project, then write its path here (e.g. <code>image/hero.jpg</code>).</p>
                                     </div>
                                 </div>
                             </div>
@@ -251,11 +250,10 @@
                         <span class="field-label">Images <small>(first image is the main one · up to 4)</small></span>
                         <div class="image-list" id="image-list"></div>
                         <div class="inline-form small">
-                            <input type="file" id="p-file" accept="image/*" multiple hidden>
-                            <button type="button" class="btn btn-light" id="p-pick"><i class="fa-solid fa-upload"></i> Upload images</button>
-                            <input id="p-url" type="text" placeholder="…or paste image URL">
-                            <button type="button" class="btn btn-light" id="p-url-add">Add URL</button>
+                            <input id="p-url" type="text" placeholder="image/product1.jpg  or  https://… (image URL)">
+                            <button type="button" class="btn btn-light" id="p-url-add">Add image</button>
                         </div>
+                        <p class="hint">Put the photo in the <b>image</b> folder of the project, then write its path here (e.g. <code>image/product1.jpg</code>). A full https:// link also works.</p>
                     </div>
 
                     <label class="switch"><input id="p-instock" type="checkbox" checked><span></span> Show on website</label>

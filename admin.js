@@ -84,36 +84,6 @@ function categoryName(slug) {
     return c ? c.name : slug;
 }
 
-// Resize an image file in the browser -> compressed JPEG data URL
-// (so no paid Firebase Storage plan is needed)
-function fileToDataURL(file, maxSize = 900, quality = 0.78) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onerror = reject;
-        reader.onload = () => {
-            const img = new Image();
-            img.onerror = reject;
-            img.onload = () => {
-                let { width, height } = img;
-                const scale = Math.min(1, maxSize / Math.max(width, height));
-                width = Math.round(width * scale);
-                height = Math.round(height * scale);
-                const canvas = document.createElement("canvas");
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext("2d");
-                ctx.fillStyle = "#fff";
-                ctx.fillRect(0, 0, width, height);
-                ctx.drawImage(img, 0, 0, width, height);
-                resolve(canvas.toDataURL("image/jpeg", quality));
-            };
-            img.src = reader.result;
-        };
-        reader.readAsDataURL(file);
-    });
-}
-
-
 // ============================================================================
 // LOGIN / LOGOUT
 // ============================================================================
@@ -531,27 +501,18 @@ $("#image-list").addEventListener("click", (e) => {
     renderModalImages();
 });
 
-$("#p-pick").addEventListener("click", () => $("#p-file").click());
-
-$("#p-file").addEventListener("change", async (e) => {
-    const files = Array.from(e.target.files);
-    e.target.value = "";
-    for (const file of files) {
-        if (modalImages.length >= 4) { toast("Maximum 4 images per product", true); break; }
-        try {
-            modalImages.push(await fileToDataURL(file));
-        } catch { toast("Could not read " + file.name, true); }
-    }
-    renderModalImages();
-});
-
-$("#p-url-add").addEventListener("click", () => {
-    const v = $("#p-url").value.trim();
+function addImageFromInput() {
+    let v = $("#p-url").value.trim().replace(/^\.?\//, "");
     if (!v) return;
+    if (!/^(https?:|data:|image\/)/i.test(v)) v = "image/" + v;
     if (modalImages.length >= 4) return toast("Maximum 4 images per product", true);
     modalImages.push(v);
     $("#p-url").value = "";
     renderModalImages();
+}
+$("#p-url-add").addEventListener("click", addImageFromInput);
+$("#p-url").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); addImageFromInput(); }
 });
 
 async function openProductModal(product) {
@@ -896,18 +857,6 @@ function fillSettingsForm() {
 
 settingsForm.elements.heroImage.addEventListener("input", (e) => {
     $("#hero-preview").src = e.target.value;
-});
-
-$("#hero-pick").addEventListener("click", () => $("#hero-file").click());
-$("#hero-file").addEventListener("change", async (e) => {
-    const file = e.target.files[0];
-    e.target.value = "";
-    if (!file) return;
-    try {
-        const url = await fileToDataURL(file, 1400, 0.8);
-        settingsForm.elements.heroImage.value = url;
-        $("#hero-preview").src = url;
-    } catch { toast("Could not read image", true); }
 });
 
 settingsForm.addEventListener("submit", async (e) => {

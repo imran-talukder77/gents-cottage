@@ -42,7 +42,7 @@ const products = [
     {
         id: 5,
         name: "Premium Cotton T-Shirt",
-        image: "image/product5.png",
+        image: "image/product5.jpg",
         price: 790,
         oldPrice: 990,
         category: "tshirt",
@@ -52,7 +52,7 @@ const products = [
     {
         id: 6,
         name: "Oversized Premium T-Shirt",
-        image: "image/product6.png",
+        image: "image/product6.jpg",
         price: 850,
         oldPrice: 1100,
         category: "tshirt",
@@ -62,7 +62,7 @@ const products = [
     {
         id: 7,
         name: "Basic Cotton T-Shirt",
-        image: "image/product7.png",
+        image: "image/product7.jpg",
         price: 690,
         oldPrice: 850,
         category: "tshirt",

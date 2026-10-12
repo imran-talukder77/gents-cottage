@@ -8,15 +8,18 @@ Static storefront + Firebase (Firestore + Auth). No build step.
 - `admin.html` – admin panel (login with your Firebase Auth admin user)
 
 ## Admin panel
-Dashboard · Products (add / edit / delete / stock / featured, multi-image upload) ·
+Dashboard · Products (add / edit / delete / stock / featured, images by path or URL) ·
 Categories · Orders (status, call, WhatsApp) · Customers · Store & Landing Page settings.
 
 ## One-time setup (required)
 1. Firebase Console → **Firestore Database → Rules** → paste `firestore.rules` → **Publish**.
 2. Open `/admin.html`, log in, go to **Products** → **Import demo products** (or just Add Product).
 
-Product images are resized in the browser and stored inside Firestore, so no paid
-Firebase Storage plan is needed. You can also paste any image URL.
+No Firebase Storage is used. There is no image upload in the admin panel:
+1. Copy the photo into the `image/` folder (e.g. `image/shirt-blue.jpg`) and push to GitHub (Cloudflare redeploys automatically).
+2. In Admin -> Products -> Add/Edit, type the path (`image/shirt-blue.jpg`, or just `shirt-blue.jpg`) and press **Add image**.
+A full https:// image link also works. Same for the landing page hero image.
+Tip: use .jpg/.webp, around 1000px wide, under 150 KB, so the site stays fast.
 
 ## Files
 `store.js` shared Firebase + data helpers · `admin.js/.css` admin panel ·
