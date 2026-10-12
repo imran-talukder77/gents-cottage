@@ -1,88 +1,92 @@
-import { products } from "./products.js";
-
+import {
+    db, serverTimestamp, createOrderWithStock, stockOf,
+    getProducts, getProductById, getSettings, applySettingsToPage,
+    productCardHTML, escapeHTML, formatPrice, discountPercent
+} from "./store.js";
 
 
 // ============================================================================
-// LOAD PRODUCT FROM URL
+// LOAD PRODUCT FROM URL (Firestore, with built-in fallback)
 // ============================================================================
 
 const urlParams =
     new URLSearchParams(window.location.search);
 
 const productId =
-    Number(urlParams.get("id"));
+    urlParams.get("id");
 
 const currentProduct =
-    products.find(function (product) {
-        return product.id === productId;
+    await getProductById(productId);
+
+const products =
+    await getProducts();
+
+getSettings().then(applySettingsToPage);
+
+
+if (currentProduct && !currentProduct.visible) {
+
+    document.querySelector(".product-details").innerHTML =
+        `<div style="text-align:center;padding:90px 20px"><h2>${escapeHTML(currentProduct.name)}</h2><p style="margin:12px 0 24px;color:#666">This product is currently sold out or unavailable.</p><a href="index.html#products" style="background:#111;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none">Continue shopping</a></div>`;
+
+} else if (currentProduct) {
+
+    document.title = currentProduct.name + " | Gents Cottage";
+
+    // Image gallery
+    const imageBox = document.querySelector(".details-image");
+
+    const gallery = currentProduct.images.length
+        ? currentProduct.images
+        : [currentProduct.image];
+
+    imageBox.innerHTML =
+        `<img src="${escapeHTML(gallery[0])}" alt="${escapeHTML(currentProduct.name)}">` +
+        (gallery.length > 1
+            ? `<div class="details-thumbs">${gallery.map(function (src, i) {
+                return `<button type="button" class="${i === 0 ? "active" : ""}"><img src="${escapeHTML(src)}" alt=""></button>`;
+            }).join("")}</div>`
+            : "");
+
+    imageBox.addEventListener("click", function (event) {
+        const thumb = event.target.closest(".details-thumbs button");
+        if (!thumb) return;
+        imageBox.querySelector(":scope > img").src = thumb.querySelector("img").src;
+        imageBox.querySelectorAll(".details-thumbs button").forEach(function (b) { b.classList.remove("active"); });
+        thumb.classList.add("active");
     });
 
+    document.querySelector(".details-category").textContent =
+        currentProduct.category.toUpperCase();
 
-// =========================
-// UPDATE PRODUCT DETAILS
-// =========================
+    document.querySelector(".details-info h1").textContent =
+        currentProduct.name;
 
-if (currentProduct) {
+    document.querySelector(".details-price span").textContent =
+        formatPrice(currentProduct.price);
 
-    const productImage =
-        document.querySelector(".details-image img");
+    const oldPriceEl = document.querySelector(".details-price del");
 
-    const productCategory =
-        document.querySelector(".details-category");
+    oldPriceEl.textContent = currentProduct.oldPrice ? formatPrice(currentProduct.oldPrice) : "";
+    oldPriceEl.style.display = currentProduct.oldPrice ? "" : "none";
 
-    const productName =
-        document.querySelector(".details-info h1");
+    document.querySelector(".details-description").textContent =
+        currentProduct.description;
 
-    const productPrice =
-        document.querySelector(".details-price span");
+    // Sizes
+    document.querySelector(".details-size .size-options").innerHTML =
+        currentProduct.sizes.map(function (size) {
+            const left = stockOf(currentProduct, size);
+            return left > 0
+                ? `<button type="button" data-stock="${left === Infinity ? "" : left}">${escapeHTML(size)}</button>`
+                : `<button type="button" class="size-out" disabled title="Out of stock">${escapeHTML(size)}</button>`;
+        }).join("") +
+        `<p class="stock-note" style="width:100%;margin-top:8px;font-size:13px;color:#b45309;min-height:18px"></p>`;
 
-    const productOldPrice =
-        document.querySelector(".details-price del");
+} else {
 
-
-    if (productImage) {
-
-        productImage.src =
-            currentProduct.image;
-
-        productImage.alt =
-            currentProduct.name;
-
-    }
-
-
-    if (productCategory) {
-
-        productCategory.textContent =
-            currentProduct.category.toUpperCase();
-
-    }
-
-
-    if (productName) {
-
-        productName.textContent =
-            currentProduct.name;
-
-    }
-
-
-    if (productPrice) {
-
-        productPrice.textContent =
-            "৳" +
-            currentProduct.price.toLocaleString();
-
-    }
-
-
-    if (productOldPrice) {
-
-        productOldPrice.textContent =
-            "৳" +
-            currentProduct.oldPrice.toLocaleString();
-
-    }
+    document.querySelector(".product-details").innerHTML =
+        `<div style="text-align:center;padding:90px 20px"><h2>Product not found</h2><p style="margin:12px 0 24px;color:#666">This product may have been removed.</p><a href="index.html#products" style="background:#111;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none">Back to shop</a></div>`;
 
 }
 
@@ -106,151 +110,19 @@ if (
     const relatedProducts =
         products
             .filter(function (product) {
-
                 return (
-
-                    product.category ===
-                    currentProduct.category &&
-
-                    product.id !==
-                    currentProduct.id
-
+                    product.category === currentProduct.category &&
+                    product.id !== currentProduct.id
                 );
-
             })
             .slice(0, 4);
 
+    relatedProductsContainer.innerHTML =
+        relatedProducts.map(productCardHTML).join("");
 
-    relatedProducts.forEach(
-        function (product) {
-
-            const productCard =
-                document.createElement(
-                    "div"
-                );
-
-
-            // Same class as Home page
-
-            productCard.className =
-                "product-card";
-
-
-            productCard.dataset.category =
-                product.category;
-
-
-            productCard.innerHTML = `
-
-                <div class="product-image">
-
-                    <a href="product-details.html?id=${product.id}">
-
-                        <img
-                            src="${product.image}"
-                            alt="${product.name}"
-                        >
-
-                    </a>
-
-
-                    <span class="product-badge">
-
-                        ${product.badge}
-
-                    </span>
-
-                </div>
-
-
-                <div class="product-info">
-
-                    <h3>
-
-                        ${product.name}
-
-                    </h3>
-
-
-                    <div class="price">
-
-                        <span>
-
-                            ৳${product.price}
-
-                        </span>
-
-                        <del>
-
-                            ৳${product.oldPrice}
-
-                        </del>
-
-                    </div>
-
-
-                    <div class="product-sizes">
-
-                        <button
-                            class="size-btn"
-                            data-size="M"
-                        >
-                            M
-                        </button>
-
-
-                        <button
-                            class="size-btn"
-                            data-size="L"
-                        >
-                            L
-                        </button>
-
-
-                        <button
-                            class="size-btn"
-                            data-size="XL"
-                        >
-                            XL
-                        </button>
-
-
-                        <button
-                            class="size-btn"
-                            data-size="XXL"
-                        >
-                            XXL
-                        </button>
-
-                    </div>
-
-
-                    <p class="size-error">
-
-                        Please select a size first!
-
-                    </p>
-
-
-                    <button class="add-cart">
-
-                        <i class="fa-solid fa-cart-shopping"></i>
-
-                        ADD TO CART
-
-                    </button>
-
-                </div>
-
-            `;
-
-
-            relatedProductsContainer.appendChild(
-                productCard
-            );
-
-        }
-    );
+    if (!relatedProducts.length) {
+        relatedProductsContainer.closest("section").style.display = "none";
+    }
 
 }
 
@@ -393,12 +265,7 @@ if (relatedProductsContainer) {
                     );
 
 
-                const relatedProductId =
-                    Number(
-                        productUrl.searchParams.get(
-                            "id"
-                        )
-                    );
+                const relatedProductId = productUrl.searchParams.get("id");
 
 
                 // FIND PRODUCT DATA
@@ -443,13 +310,36 @@ if (relatedProductsContainer) {
 
                 // ADD / UPDATE
 
+                const relatedMax =
+                    Number(selectedSizeButton.dataset.stock) || null;
+
+                if (
+                    existingProduct &&
+                    relatedMax &&
+                    existingProduct.quantity + 1 > relatedMax
+                ) {
+
+                    alert("Sorry, only " + relatedMax + " available in size " + selectedSize + ".");
+
+                    return;
+
+                }
+
                 if (existingProduct) {
 
                     existingProduct.quantity++;
 
+                    existingProduct.maxQty = relatedMax;
+
                 } else {
 
                     cart.push({
+
+                        id:
+                            relatedProduct.id,
+
+                        maxQty:
+                            relatedMax,
 
                         name:
                             relatedProduct.name,
@@ -586,6 +476,8 @@ const detailSizeButtons =
 
 let selectedSize = "";
 
+let selectedStock = null;
+
 
 
 detailSizeButtons.forEach(
@@ -621,6 +513,31 @@ detailSizeButtons.forEach(
 
                 selectedSize =
                     button.textContent.trim();
+
+                selectedStock =
+                    Number(button.dataset.stock) || null;
+
+                const stockNote =
+                    document.querySelector(".stock-note");
+
+                if (stockNote) {
+
+                    stockNote.textContent =
+                        selectedStock && selectedStock <= 5
+                            ? "Hurry — only " + selectedStock + " left in this size!"
+                            : "";
+
+                }
+
+                if (selectedStock && productQuantity > selectedStock) {
+
+                    productQuantity = selectedStock;
+
+                    const qd = document.querySelector(".quantity-box span");
+
+                    if (qd) qd.textContent = productQuantity;
+
+                }
 
 
                 // Remove size error
@@ -703,7 +620,15 @@ if (quantityBox) {
                         buttonText === "+"
                     ) {
 
-                        productQuantity++;
+                        if (selectedStock && productQuantity >= selectedStock) {
+
+                            alert("Sorry, only " + selectedStock + " available in this size.");
+
+                        } else {
+
+                            productQuantity++;
+
+                        }
 
                     }
 
@@ -1039,14 +964,34 @@ if (detailsAddCart) {
             // ADD / UPDATE
             // =========================
 
+            if (
+                existingProduct &&
+                selectedStock &&
+                existingProduct.quantity + productQuantity > selectedStock
+            ) {
+
+                alert("Sorry, only " + selectedStock + " available in size " + selectedSize + " (you already have some in your cart).");
+
+                return;
+
+            }
+
             if (existingProduct) {
 
                 existingProduct.quantity +=
                     productQuantity;
 
+                existingProduct.maxQty = selectedStock;
+
             } else {
 
                 cart.push({
+
+                    id:
+                        currentProduct ? currentProduct.id : "",
+
+                    maxQty:
+                        selectedStock,
 
                     name:
                         productName,
@@ -2365,6 +2310,9 @@ if (orderForm) {
 
                             return {
 
+                                id:
+                                    item.id || "",
+
                                 name:
                                     item.name,
 
@@ -2392,7 +2340,7 @@ if (orderForm) {
                     "Pending",
 
                 createdAt:
-                    window.serverTimestamp()
+                    serverTimestamp()
 
             };
 
@@ -2406,18 +2354,7 @@ if (orderForm) {
 
                 // Check Firebase
 
-                if (
-                    !window.db ||
-                    !window.collection ||
-                    !window.addDoc ||
-                    !window.serverTimestamp
-                ) {
-
-                    throw new Error(
-                        "Firebase is not connected."
-                    );
-
-                }
+                if (!db) { throw new Error("Firebase is not connected."); }
 
 
 
@@ -2425,16 +2362,33 @@ if (orderForm) {
                 // SEND ORDER
                 // =========================
 
+                const stockItems =
+                    cart.map(function (item) {
+
+                        const match =
+                            item.id
+                                ? null
+                                : products.find(function (p) {
+                                    return p.name === item.name;
+                                });
+
+                        return {
+                            id: item.id || (match ? match.id : ""),
+                            name: item.name,
+                            size: item.size,
+                            quantity: item.quantity
+                        };
+
+                    });
+
+                orderData.products.forEach(function (p, i) {
+                    p.id = stockItems[i].id;
+                });
+
                 const docRef =
-                    await window.addDoc(
-
-                        window.collection(
-                            window.db,
-                            "orders"
-                        ),
-
-                        orderData
-
+                    await createOrderWithStock(
+                        orderData,
+                        stockItems
                     );
 
 
@@ -2542,7 +2496,9 @@ if (orderForm) {
 
 
                 alert(
-                    "Something went wrong. Please try again."
+                    error.code === "out-of-stock"
+                        ? error.message + "\nPlease update your cart and try again."
+                        : "Something went wrong. Please try again."
                 );
 
 

@@ -4,586 +4,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
 
     <title>Gents Cottage | Admin Panel</title>
 
-    <link rel="stylesheet" href="style.css">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin.css">
 </head>
 
 <body>
 
-
-    <!-- =========================
-     ADMIN LOGIN
-========================= -->
-
-    <div class="admin-login" id="admin-login">
-
-        <div class="login-box">
-
+    <!-- ================= LOGIN ================= -->
+    <div class="login-screen" id="admin-login">
+        <form class="login-card" id="login-form">
+            <div class="login-logo">GENTS <span>COTTAGE</span></div>
             <h2>Admin Login</h2>
+            <p>Sign in to manage your store</p>
 
-            <p>
-                Login to manage your orders
-            </p>
+            <input type="email" id="admin-email" placeholder="Admin Email" required autocomplete="username">
+            <input type="password" id="admin-password" placeholder="Password" required autocomplete="current-password">
 
-
-            <form id="login-form">
-
-                <input type="email" id="admin-email" placeholder="Admin Email" required>
-
-
-                <input type="password" id="admin-password" placeholder="Password" required>
+            <button type="submit" class="btn btn-dark btn-block">LOGIN</button>
+            <p id="login-error" class="login-error"></p>
+        </form>
+    </div>
 
 
-                <button type="submit">
+    <!-- ================= APP ================= -->
+    <div class="app" id="admin-page" hidden>
 
-                    LOGIN
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">GENTS <span>COTTAGE</span><small>Admin</small></div>
 
-                </button>
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-view="dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</button>
+                <button class="nav-item" data-view="products"><i class="fa-solid fa-shirt"></i> Products</button>
+                <button class="nav-item" data-view="categories"><i class="fa-solid fa-tags"></i> Categories</button>
+                <button class="nav-item" data-view="orders"><i class="fa-solid fa-box"></i> Orders <em class="nav-badge" id="nav-pending" hidden>0</em></button>
+                <button class="nav-item" data-view="customers"><i class="fa-solid fa-users"></i> Customers</button>
+                <button class="nav-item" data-view="settings"><i class="fa-solid fa-gear"></i> Store &amp; Landing Page</button>
+            </nav>
+
+            <div class="sidebar-foot">
+                <a href="index.html" target="_blank" class="nav-item"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Website</a>
+                <button class="nav-item" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+            </div>
+        </aside>
+        <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+        <!-- Main -->
+        <main class="main">
+            <header class="topbar">
+                <button class="icon-btn menu-toggle" id="menu-toggle" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+                <h1 id="view-title">Dashboard</h1>
+                <div class="topbar-actions" id="topbar-actions"></div>
+            </header>
+
+            <!-- DASHBOARD -->
+            <section class="view" id="view-dashboard">
+                <div class="stat-grid" id="stat-grid"></div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-head"><h3>Orders — last 7 days</h3></div>
+                        <div class="bars" id="orders-chart"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-head"><h3>Top selling products</h3></div>
+                        <div id="top-products"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-head">
+                        <h3>Recent orders</h3>
+                        <button class="link-btn" data-goto="orders">View all</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="table" id="recent-orders"></table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PRODUCTS -->
+            <section class="view" id="view-products" hidden>
+                <div class="toolbar">
+                    <div class="search"><i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="search" id="product-search" placeholder="Search products...">
+                    </div>
+                    <select id="product-category-filter"></select>
+                    <button class="btn btn-gold" id="add-product-btn"><i class="fa-solid fa-plus"></i> Add Product</button>
+                </div>
+
+                <div class="notice" id="seed-notice" hidden>
+                    <div>
+                        <strong>Your store is showing the built-in demo products.</strong>
+                        Import them into your database to edit or delete them from here.
+                    </div>
+                    <button class="btn btn-dark" id="seed-btn">Import demo products</button>
+                </div>
+
+                <div class="product-grid" id="product-grid"></div>
+            </section>
+
+            <!-- CATEGORIES -->
+            <section class="view" id="view-categories" hidden>
+                <div class="card">
+                    <form class="inline-form" id="category-form">
+                        <input type="text" id="category-name" placeholder="New category name (e.g. Panjabi, Jeans, Shoes)" required>
+                        <button class="btn btn-gold" type="submit"><i class="fa-solid fa-plus"></i> Add Category</button>
+                    </form>
+                    <div id="category-list" class="category-list"></div>
+                </div>
+            </section>
+
+            <!-- ORDERS -->
+            <section class="view" id="view-orders" hidden>
+                <div class="toolbar">
+                    <div class="search"><i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="search" id="order-search" placeholder="Search by name, phone or order ID...">
+                    </div>
+                    <select id="order-status-filter">
+                        <option value="all">All statuses</option>
+                        <option>Pending</option>
+                        <option>Confirmed</option>
+                        <option>Delivered</option>
+                        <option>Cancelled</option>
+                    </select>
+                </div>
+                <div id="orders-list" class="orders-list"></div>
+            </section>
+
+            <!-- CUSTOMERS -->
+            <section class="view" id="view-customers" hidden>
+                <div class="toolbar">
+                    <div class="search"><i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="search" id="customer-search" placeholder="Search customers...">
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="table-wrap"><table class="table" id="customers-table"></table></div>
+                </div>
+            </section>
+
+            <!-- SETTINGS -->
+            <section class="view" id="view-settings" hidden>
+                <form id="settings-form" class="settings-form">
+                    <div class="card">
+                        <div class="card-head"><h3>Landing page hero</h3></div>
+                        <div class="form-grid">
+                            <label>Small heading<input name="heroEyebrow" type="text"></label>
+                            <label>Main headline<input name="heroTitle" type="text"></label>
+                            <label class="full">Sub text<textarea name="heroSubtitle" rows="3"></textarea></label>
+                            <div class="full">
+                                <span class="field-label">Hero image</span>
+                                <div class="hero-upload">
+                                    <img id="hero-preview" alt="">
+                                    <div>
+                                        <input type="file" id="hero-file" accept="image/*" hidden>
+                                        <button type="button" class="btn btn-light" id="hero-pick"><i class="fa-solid fa-image"></i> Upload image</button>
+                                        <input name="heroImage" type="text" placeholder="…or paste an image URL">
+                                    </div>
+                                </div>
+                            </div>
+                            <label class="full">Top announcement bar (leave empty to hide)<input name="announcement" type="text"></label>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-head"><h3>Contact &amp; social</h3></div>
+                        <div class="form-grid">
+                            <label>Phone<input name="phone" type="text"></label>
+                            <label>Email<input name="email" type="email"></label>
+                            <label>Address<input name="address" type="text"></label>
+                            <label>Opening hours<input name="hours" type="text"></label>
+                            <label>Facebook URL<input name="facebook" type="url"></label>
+                            <label>Instagram URL<input name="instagram" type="url"></label>
+                            <label>YouTube URL<input name="youtube" type="url"></label>
+                            <label>TikTok URL<input name="tiktok" type="url"></label>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-gold btn-lg" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save Settings</button>
+                </form>
+            </section>
+        </main>
+    </div>
 
 
-                <p id="login-error" style="display: none;"></p>
+    <!-- ================= PRODUCT MODAL ================= -->
+    <div class="modal" id="product-modal" hidden>
+        <div class="modal-box">
+            <div class="modal-head">
+                <h2 id="product-modal-title">Add Product</h2>
+                <button class="icon-btn" data-close-modal aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
 
+            <form id="product-form" class="modal-body">
+                <input type="hidden" id="p-id">
+
+                <div class="form-grid">
+                    <label class="full">Product name *
+                        <input id="p-name" type="text" required placeholder="e.g. Premium Casual Shirt">
+                    </label>
+
+                    <label>Category *
+                        <select id="p-category" required></select>
+                    </label>
+
+                    <label>Badge
+                        <select id="p-badge">
+                            <option value="">None</option>
+                            <option>NEW</option>
+                            <option>SALE</option>
+                            <option>HOT</option>
+                            <option>LIMITED</option>
+                            <option>BEST SELLER</option>
+                        </select>
+                    </label>
+
+                    <label>Selling price (৳) *
+                        <input id="p-price" type="number" min="0" required placeholder="1290">
+                    </label>
+
+                    <label>Old price (৳) <small>optional, shows discount</small>
+                        <input id="p-old-price" type="number" min="0" placeholder="1590">
+                    </label>
+
+                    <div class="full">
+                        <span class="field-label">Sizes &amp; stock <small>tap the sizes you sell, then enter how many pieces you have</small></span>
+                        <div class="chips" id="size-chips"></div>
+                        <div class="inline-form small">
+                            <input id="custom-size" type="text" placeholder="Add custom size (e.g. 32, 34, Free)">
+                            <button type="button" class="btn btn-light" id="add-size-btn">Add</button>
+                        </div>
+                        <div class="stock-grid" id="stock-grid"></div>
+                        <p class="hint">Set a size to 0 and customers can't order it. When every size is 0 the product hides from the website automatically.</p>
+                    </div>
+
+                    <label class="full">Description
+                        <textarea id="p-description" rows="4" placeholder="Fabric, fit, care instructions…"></textarea>
+                    </label>
+
+                    <div class="full">
+                        <span class="field-label">Images <small>(first image is the main one · up to 4)</small></span>
+                        <div class="image-list" id="image-list"></div>
+                        <div class="inline-form small">
+                            <input type="file" id="p-file" accept="image/*" multiple hidden>
+                            <button type="button" class="btn btn-light" id="p-pick"><i class="fa-solid fa-upload"></i> Upload images</button>
+                            <input id="p-url" type="text" placeholder="…or paste image URL">
+                            <button type="button" class="btn btn-light" id="p-url-add">Add URL</button>
+                        </div>
+                    </div>
+
+                    <label class="switch"><input id="p-instock" type="checkbox" checked><span></span> Show on website</label>
+                    <label class="switch"><input id="p-featured" type="checkbox"><span></span> Featured on landing page</label>
+                </div>
+
+                <div class="modal-foot">
+                    <button type="button" class="btn btn-light" data-close-modal>Cancel</button>
+                    <button type="submit" class="btn btn-gold" id="product-save"><i class="fa-solid fa-floppy-disk"></i> Save Product</button>
+                </div>
             </form>
-
         </div>
-
     </div>
 
-    <div class="admin-page" id="admin-page" style="display: none;">
+    <div class="toast" id="toast"></div>
 
-        <div class="admin-header">
-
-            <div>
-                <p>GENTS COTTAGE</p>
-                <h1>Order Management</h1>
-            </div>
-
-            <div class="admin-stats">
-                <div class="admin-stat">
-                    <span>Total Orders</span>
-                    <strong id="total-orders">0</strong>
-                </div>
-
-                <div class="admin-stat">
-                    <span>Pending</span>
-                    <strong id="pending-orders">0</strong>
-                </div>
-                <div class="admin-stat">
-                    <span>Delivered</span>
-                    <strong id="delivered-orders">0</strong>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="orders-container">
-
-            <div class="orders-header">
-                <div class="admin-search">
-
-                    <i class="fa-solid fa-magnifying-glass"></i>
-
-                    <input type="text" id="order-search" placeholder="Search by customer name or phone...">
-
-                </div>
-                <h2>
-                    <i class="fa-solid fa-box"></i>
-                    Customer Orders
-                </h2>
-            </div>
-
-            <div id="orders-list">
-
-                <p>Loading orders...</p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-
-
-
-
-
-
-    <script type="module">
-
-        import { initializeApp } from
-            "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-
-        import {
-            getFirestore,
-            collection,
-            getDocs,
-            doc,
-            updateDoc,
-            deleteDoc
-
-        } from
-            "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
-
-
-        import {
-            getAuth,
-            signInWithEmailAndPassword,
-            onAuthStateChanged,
-            signOut
-        } from
-            "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-
-
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        const firebaseConfig = {
-            apiKey: "AIzaSyDmhq96_0766Rlh4B8BffPHFCKHHOgnOjk",
-            authDomain: "gents-cottage.firebaseapp.com",
-            projectId: "gents-cottage",
-            storageBucket: "gents-cottage.firebasestorage.app",
-            messagingSenderId: "827979587396",
-            appId: "1:827979587396:web:be87aaf1861b1ce84f4111",
-            measurementId: "G-WD1WV0SL4Q"
-        };
-
-
-        const app = initializeApp(firebaseConfig);
-
-        const db = getFirestore(app);
-
-        const auth = getAuth(app);
-
-
-        console.log("Admin Firebase Connected!");
-
-
-        const ordersList =
-            document.querySelector("#orders-list");
-
-        const totalOrders =
-            document.querySelector("#total-orders");
-
-        const pendingOrders =
-            document.querySelector("#pending-orders");
-
-        const deliveredOrders =
-            document.querySelector("#delivered-orders");
-
-
-        async function updateOrderStatus(orderId, newStatus) {
-
-            try {
-
-                const orderRef = doc(
-                    db,
-                    "orders",
-                    orderId
-                );
-
-                await updateDoc(orderRef, {
-                    status: newStatus
-                });
-
-                console.log(
-                    "Status updated successfully!"
-                );
-
-            } catch (error) {
-
-                console.error(
-                    "Status update error:",
-                    error
-                );
-
-            }
-
-        }
-
-        async function deleteOrder(orderId) {
-
-            const confirmDelete =
-                confirm("Are you sure you want to delete this order?");
-
-            if (!confirmDelete) {
-                return;
-            }
-
-            try {
-
-                const orderRef = doc(
-                    db,
-                    "orders",
-                    orderId
-                );
-
-                await deleteDoc(orderRef);
-
-                console.log("Order deleted successfully!");
-
-                loadOrders();
-
-            } catch (error) {
-
-                console.error(
-                    "Delete order error:",
-                    error
-                );
-
-                alert("Failed to delete order.");
-
-            }
-
-        }
-
-        async function loadOrders() {
-
-            try {
-
-                const snapshot =
-                    await getDocs(
-                        collection(db, "orders")
-                    );
-
-                ordersList.innerHTML = "";
-
-                let total = 0;
-                let pending = 0;
-                let delivered = 0;
-
-
-                snapshot.forEach(function (doc) {
-
-                    const order = doc.data();
-
-                    total++;
-
-                    if (order.status === "Pending") {
-                        pending++;
-                    }
-
-                    if (order.status === "Delivered") {
-                        delivered++;
-                    }
-
-                    const orderBox =
-                        document.createElement("div");
-
-
-                    orderBox.innerHTML = `
-    <h3>
-        <i class="fa-solid fa-user"></i>
-        ${order.customerName}
-    </h3>
-    
-    <p class="admin-order-id">
-    <i class="fa-solid fa-hashtag"></i>
-    Order ID:
-    <strong>
-        GC-${order.createdAt?.toDate
-                            ? order.createdAt.toDate().toISOString().slice(0, 10).replace(/-/g, "")
-                            : "--------"}-${doc.id.slice(0, 3).toUpperCase()}
-    </strong>
-</p>
-
-    <p>
-        <i class="fa-solid fa-phone"></i>
-        ${order.customerPhone}
-    </p>
-
-    <p>
-        <i class="fa-solid fa-location-dot"></i>
-        ${order.customerAddress}
-    </p>
-
-    <div class="admin-products">
-
-        <strong>Ordered Products</strong>
-
-        ${(order.products || []).map(function (product) {
-
-                                return `
-                <div class="admin-product">
-
-                    <span>
-                        ${product.name}
-                    </span>
-
-                    <small>
-                        Size: ${product.size}
-                        | Qty: ${product.quantity}
-                    </small>
-
-                    <b>
-                        ৳${product.price * product.quantity}
-                    </b>
-
-                </div>
-            `;
-
-                            }).join("")}
-
-    </div>
-
-    <p>
-        <strong>Total Items:</strong>
-        ${order.totalItems}
-    </p>
-
-    <p>
-        <strong>Total:</strong>
-        ৳${order.totalPrice}
-    </p>
-
-    <p>
-    <strong>Status:</strong>
-
-    <span class="order-status status-${(order.status || "Pending").toLowerCase()}">
-        ${order.status || "Pending"}
-    </span>
-</p>
-
-<div class="status-control">
-
-    <label>Change Status:</label>
-
-    <select class="status-select" data-id="${doc.id}">
-
-        <option value="Pending"
-            ${(order.status || "Pending") === "Pending" ? "selected" : ""}>
-            Pending
-        </option>
-
-        <option value="Confirmed"
-            ${order.status === "Confirmed" ? "selected" : ""}>
-            Confirmed
-        </option>
-
-        <option value="Delivered"
-            ${order.status === "Delivered" ? "selected" : ""}>
-            Delivered
-        </option>
-
-        <option value="Cancelled"
-            ${order.status === "Cancelled" ? "selected" : ""}>
-            Cancelled
-        </option>
-
-    </select>
-
-</div>
-
-<button class="delete-order-btn" data-id="${doc.id}">
-    <i class="fa-solid fa-trash"></i>
-    Delete Order
-</button>
-
-    <hr>
-`;
-
-                    ordersList.appendChild(orderBox);
-                    const statusSelect =
-                        orderBox.querySelector(".status-select");
-
-                    const deleteButton =
-                        orderBox.querySelector(".delete-order-btn");
-
-                    deleteButton.addEventListener("click", function () {
-
-                        deleteOrder(this.dataset.id);
-
-                    });
-
-                    statusSelect.addEventListener("change", async function () {
-
-                        await updateOrderStatus(
-                            doc.id,
-                            this.value
-                        );
-
-                        loadOrders();
-
-                    });
-
-                });
-
-
-                totalOrders.textContent = total;
-
-                pendingOrders.textContent = pending;
-
-                deliveredOrders.textContent = delivered;
-
-
-            } catch (error) {
-
-                console.error("Error loading orders:", error);
-
-                ordersList.innerHTML =
-                    "<p>Failed to load orders.</p>";
-
-            }
-        }
-
-        const searchInput =
-            document.querySelector("#order-search");
-
-        searchInput.addEventListener("input", function () {
-
-            const searchText =
-                this.value.toLowerCase().trim();
-
-            const orderCards =
-                document.querySelectorAll("#orders-list > div");
-
-            orderCards.forEach(function (card) {
-
-                const cardText =
-                    card.textContent.toLowerCase();
-
-                if (cardText.includes(searchText)) {
-                    card.style.display = "block";
-                } else {
-                    card.style.display = "none";
-                }
-
-            });
-
-        });
-
-
-
-        // =========================
-        // ADMIN LOGIN ELEMENTS
-        // =========================
-
-        const loginForm =
-            document.querySelector("#login-form");
-
-        const adminLogin =
-            document.querySelector("#admin-login");
-
-        const adminPage =
-            document.querySelector("#admin-page");
-
-        const loginError =
-            document.querySelector("#login-error");
-
-
-        // =========================
-        // ADMIN LOGIN
-        // =========================
-
-        loginForm.addEventListener(
-            "submit",
-            async function (event) {
-
-                event.preventDefault();
-
-
-                const email =
-                    document
-                        .querySelector("#admin-email")
-                        .value
-                        .trim();
-
-
-                const password =
-                    document
-                        .querySelector("#admin-password")
-                        .value;
-
-
-                try {
-
-                    // Firebase login
-
-                    await signInWithEmailAndPassword(
-                        auth,
-                        email,
-                        password
-                    );
-
-
-                    // Clear error
-
-                    loginError.style.display =
-                        "none";
-
-
-                    console.log(
-                        "Admin login successful!"
-                    );
-
-
-                } catch (error) {
-
-                    console.error(
-                        "Login error:",
-                        error
-                    );
-
-                    loginError.textContent =
-                        "Invalid email or password.";
-
-                    loginError.style.display =
-                        "block";
-
-                }
-
-            }
-        );
-
-
-        // =========================
-        // CHECK LOGIN STATUS
-        // =========================
-
-        onAuthStateChanged(
-            auth,
-            function (user) {
-
-                if (user) {
-
-                    // User logged in
-
-                    adminLogin.style.display =
-                        "none";
-
-
-                    adminPage.style.display =
-                        "block";
-
-
-                    // Load orders only after login
-
-                    loadOrders();
-
-
-                } else {
-
-                    // User not logged in
-
-                    adminLogin.style.display =
-                        "flex";
-
-
-                    adminPage.style.display =
-                        "none";
-
-                }
-
-            }
-        );
-
-    </script>
-
-
-
+    <script type="module" src="admin.js"></script>
 </body>
 
 </html>

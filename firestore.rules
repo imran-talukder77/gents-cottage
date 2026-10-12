@@ -1,0 +1,26 @@
+rules_version = '2';
+
+// Paste this in: Firebase Console -> Firestore Database -> Rules -> Publish
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Everyone can browse the store; only the logged-in admin can change it
+    // Products: admin can do anything. Customers may only change the `stock` field
+    // (that is how an order reduces stock) and cannot add new sizes or touch other fields.
+    match /products/{id} {
+      allow read: if true;
+      allow create, delete: if request.auth != null;
+      allow update: if request.auth != null
+                    || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['stock'])
+                        && request.resource.data.stock.keys().hasOnly(resource.data.stock.keys()));
+    }
+    match /categories/{id} { allow read: if true; allow write: if request.auth != null; }
+    match /settings/{id}   { allow read: if true; allow write: if request.auth != null; }
+
+    // Customers can place orders; only the admin can read / update / delete them
+    match /orders/{id} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
+    }
+  }
+}

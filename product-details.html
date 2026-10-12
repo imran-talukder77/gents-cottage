@@ -20,6 +20,7 @@
 
     <!-- Product Details CSS -->
     <link rel="stylesheet" href="product-details.css">
+    <link rel="stylesheet" href="landing.css">
 
 </head>
 
@@ -825,88 +826,7 @@
     ========================= -->
 
 
-    <script type="module">
-
-        import { initializeApp } from
-            "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-
-        import {
-            getFirestore,
-            collection,
-            addDoc,
-            serverTimestamp
-        } from
-            "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
-
-        const firebaseConfig = {
-
-            apiKey: "AIzaSyDmhq96_0766Rlh4B8BffPHFCKHHOgnOjk",
-
-            authDomain:
-                "gents-cottage.firebaseapp.com",
-
-            projectId:
-                "gents-cottage",
-
-            storageBucket:
-                "gents-cottage.firebasestorage.app",
-
-            messagingSenderId:
-                "827979587396",
-
-            appId:
-                "1:827979587396:web:be87aaf1861b1ce84f4111",
-
-            measurementId:
-                "G-WD1WV0SL4Q"
-
-        };
-
-
-        const app =
-            initializeApp(firebaseConfig);
-
-
-        const db =
-            getFirestore(app);
-
-
-        // Make Firebase available to product-details.js
-
-        window.db =
-            db;
-
-        window.collection =
-            collection;
-
-        window.addDoc =
-            addDoc;
-
-        window.serverTimestamp =
-            serverTimestamp;
-
-
-        // Load product-details.js
-
-        const script =
-            document.createElement("script");
-
-
-        script.src =
-            "product-details.js";
-
-
-        script.type =
-            "module";
-
-
-        document.body.appendChild(
-            script
-        );
-
-    </script>
-
+    <script type="module" src="product-details.js"></script>
 
 </body>
 

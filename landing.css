@@ -1,0 +1,278 @@
+/* ============================================================
+   GENTS COTTAGE - LANDING PAGE + DYNAMIC STORE EXTRAS
+   (loaded after style.css / product-details.css)
+   ============================================================ */
+
+:root {
+    --gc-gold: #c89b3c;
+    --gc-gold-dark: #a87f26;
+    --gc-ink: #111111;
+    --gc-cream: #faf6ee;
+}
+
+.landing-section[hidden],
+.sale-banner[hidden],
+.hero[hidden] { display: none !important; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+
+/* ---------- Announcement bar ---------- */
+.announcement-bar {
+    background: var(--gc-ink);
+    color: #f1e3bd;
+    text-align: center;
+    font-size: 12.5px;
+    letter-spacing: .4px;
+    padding: 9px 16px;
+}
+
+/* ---------- Hero ---------- */
+.hero {
+    background:
+        radial-gradient(900px 500px at 85% 20%, rgba(200, 155, 60, .22), transparent 60%),
+        linear-gradient(120deg, #0c0c0c 0%, #1a1a1a 60%, #262015 100%);
+    color: #fff;
+    overflow: hidden;
+}
+
+.hero-inner {
+    max-width: 1200px;
+    margin: auto;
+    padding: 70px 24px 80px;
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    gap: 50px;
+    align-items: center;
+}
+
+.hero-eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--gc-gold);
+    border: 1px solid rgba(200, 155, 60, .5);
+    padding: 7px 16px;
+    border-radius: 40px;
+    margin-bottom: 22px;
+}
+
+.hero-text h1 {
+    font-size: clamp(36px, 5.2vw, 64px);
+    line-height: 1.07;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-bottom: 20px;
+}
+
+.hero-text p {
+    color: #cfcfcf;
+    font-size: 17px;
+    line-height: 1.7;
+    max-width: 520px;
+    margin-bottom: 32px;
+}
+
+.hero-cta { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 44px; }
+
+.btn-primary, .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: .5px;
+    text-decoration: none;
+    transition: .25s;
+}
+
+.btn-primary { background: var(--gc-gold); color: #111; }
+.btn-primary:hover { background: #fff; transform: translateY(-2px); }
+.btn-ghost { border: 1.5px solid rgba(255, 255, 255, .35); color: #fff; }
+.btn-ghost:hover { border-color: var(--gc-gold); color: var(--gc-gold); }
+
+.hero-stats { display: flex; gap: 38px; flex-wrap: wrap; }
+.hero-stats strong { display: block; font-size: 24px; color: var(--gc-gold); }
+.hero-stats span { font-size: 12px; color: #aaa; letter-spacing: .5px; }
+
+.hero-visual { position: relative; display: flex; justify-content: center; }
+
+.hero-frame {
+    width: 100%;
+    max-width: 420px;
+    aspect-ratio: 4 / 5;
+    border-radius: 220px 220px 24px 24px;
+    overflow: hidden;
+    border: 6px solid rgba(200, 155, 60, .35);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, .5);
+    background: #222;
+}
+
+.hero-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.hero-float {
+    position: absolute;
+    left: 4%;
+    bottom: 10%;
+    background: #fff;
+    color: #111;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 12px 20px;
+    border-radius: 50px;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, .3);
+}
+.hero-float i { color: var(--gc-gold); margin-right: 6px; }
+
+/* ---------- Trust strip ---------- */
+.trust-strip {
+    max-width: 1200px;
+    margin: -34px auto 0;
+    position: relative;
+    z-index: 2;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, .12);
+    padding: 26px 30px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    width: calc(100% - 48px);
+}
+
+.trust-strip > div { display: flex; align-items: center; gap: 14px; }
+.trust-strip i {
+    width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center;
+    background: var(--gc-cream); color: var(--gc-gold-dark); font-size: 19px; flex: none;
+}
+.trust-strip span { font-size: 12.5px; color: #777; line-height: 1.4; }
+.trust-strip b { display: block; color: #111; font-size: 14px; }
+
+/* ---------- Sections ---------- */
+.landing-section { max-width: 1250px; margin: auto; padding: 80px 24px 10px; }
+
+/* ---------- Category cards ---------- */
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 22px;
+    margin-top: 10px;
+}
+
+.category-card {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 5;
+    border-radius: 20px;
+    overflow: hidden;
+    text-decoration: none;
+    color: #fff;
+    background: #222;
+}
+
+.category-card img {
+    width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s ease;
+}
+.category-card:hover img { transform: scale(1.08); }
+
+.category-card::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, .78) 0%, rgba(0, 0, 0, .05) 60%);
+}
+
+.category-card-text { position: absolute; left: 22px; right: 22px; bottom: 20px; z-index: 2; }
+.category-card-text h3 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.category-card-text span { font-size: 13px; color: var(--gc-gold); font-weight: 600; }
+.category-card-text i { margin-left: 4px; transition: margin .25s; }
+.category-card:hover .category-card-text i { margin-left: 10px; }
+
+/* ---------- Sale banner ---------- */
+.sale-banner {
+    max-width: 1200px;
+    margin: 80px auto 0;
+    width: calc(100% - 48px);
+    border-radius: 24px;
+    background: linear-gradient(120deg, #111 0%, #2a2112 100%);
+    color: #fff;
+    padding: 48px 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    position: relative;
+    overflow: hidden;
+}
+.sale-banner::before {
+    content: ""; position: absolute; right: -80px; top: -80px; width: 280px; height: 280px;
+    border-radius: 50%; background: rgba(200, 155, 60, .25);
+}
+.sale-banner > * { position: relative; }
+.sale-banner span { color: var(--gc-gold); font-weight: 700; letter-spacing: 3px; font-size: 12px; }
+.sale-banner h2 { font-size: clamp(24px, 3.4vw, 38px); margin: 8px 0; }
+.sale-banner h2 b { color: var(--gc-gold); }
+.sale-banner p { color: #bbb; }
+
+/* ---------- Dynamic product card extras ---------- */
+.discount-tag {
+    position: absolute; top: 12px; right: 12px; z-index: 2;
+    background: #fff; color: #e63946; font-size: 11px; font-weight: 800;
+    padding: 5px 10px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0, 0, 0, .12);
+}
+
+.stock-tag {
+    position: absolute; inset: auto 0 0 0; z-index: 2; text-align: center;
+    background: rgba(17, 17, 17, .85); color: #fff; font-size: 12px; font-weight: 700;
+    letter-spacing: 2px; padding: 10px;
+}
+
+.product-card.out-of-stock .product-image img { filter: grayscale(.8); opacity: .75; }
+
+.no-products { grid-column: 1 / -1; text-align: center; color: #888; padding: 40px 0; }
+
+#products .product-filter { flex-wrap: wrap; }
+
+/* ---------- Product details gallery ---------- */
+.details-image { position: relative; }
+
+.details-thumbs {
+    position: absolute; left: 12px; right: 12px; bottom: 12px;
+    display: flex; gap: 8px; justify-content: center;
+}
+.details-thumbs button {
+    width: 58px; height: 58px; padding: 0; border-radius: 10px; overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, .8); background: #fff; cursor: pointer; opacity: .85;
+}
+.details-thumbs button.active { border-color: var(--gc-gold); opacity: 1; }
+.details-thumbs img { width: 100%; height: 100%; object-fit: cover; transform: none !important; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+    .hero-inner { grid-template-columns: 1fr; padding: 46px 20px 70px; text-align: center; }
+    .hero-text p { margin-left: auto; margin-right: auto; }
+    .hero-cta, .hero-stats { justify-content: center; }
+    .hero-visual { order: -1; }
+    .hero-frame { max-width: 300px; }
+    .trust-strip { grid-template-columns: repeat(2, 1fr); }
+    .landing-section { padding-top: 56px; }
+}
+
+@media (max-width: 560px) {
+    .trust-strip { grid-template-columns: 1fr; padding: 20px; margin-top: -26px; }
+    .category-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .category-card-text h3 { font-size: 17px; }
+    .sale-banner { padding: 34px 26px; }
+    .announcement-bar { font-size: 11.5px; }
+}
+
+/* ---------- Sold-out sizes ---------- */
+.size-btn.size-out,
+.details-size .size-options button.size-out {
+    opacity: .4;
+    text-decoration: line-through;
+    cursor: not-allowed;
+    background: #f3f4f6;
+}
