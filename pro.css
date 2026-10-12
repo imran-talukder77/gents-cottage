@@ -1,0 +1,61 @@
+/* Gents Cottage - professional polish layer (loaded after the other stylesheets) */
+:root{--pro-gold:#c89b3c;--pro-ink:#111;--pro-radius:14px;--pro-shadow:0 10px 30px rgba(17,17,17,.08);--pro-shadow-lg:0 18px 44px rgba(17,17,17,.16)}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:"Poppins",system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+h1,h2,.section-title h2,.hero-text h1{font-family:"Playfair Display",Georgia,serif;letter-spacing:-.2px}
+::selection{background:var(--pro-gold);color:#111}
+:focus-visible{outline:2px solid var(--pro-gold);outline-offset:3px;border-radius:6px}
+img{max-width:100%}
+
+/* header */
+header{position:sticky;top:0;z-index:100;transition:box-shadow .3s,background .3s;backdrop-filter:saturate(1.4) blur(10px);background:rgba(255,255,255,.92)}
+header.scrolled{box-shadow:0 6px 24px rgba(0,0,0,.09)}
+.logo a{letter-spacing:2px}
+
+/* section titles */
+.section-title p{letter-spacing:4px;font-size:12px;font-weight:600;color:var(--pro-gold)}
+.section-title h2{position:relative;padding-bottom:18px}
+.section-title h2::after{content:"";position:absolute;left:50%;bottom:0;width:56px;height:3px;border-radius:3px;background:var(--pro-gold);transform:translateX(-50%)}
+
+/* buttons */
+.btn-primary,.btn-ghost,.filter-btn{transition:transform .25s,box-shadow .25s,background .25s,color .25s,border-color .25s}
+.btn-primary:hover{box-shadow:0 10px 24px rgba(200,155,60,.35)}
+.filter-btn{border-radius:999px}
+.filter-btn.active{box-shadow:0 6px 16px rgba(200,155,60,.35)}
+
+/* cards */
+.product-card{border-radius:var(--pro-radius);overflow:hidden;box-shadow:var(--pro-shadow);transition:transform .35s ease,box-shadow .35s ease}
+.product-card:hover{transform:translateY(-6px);box-shadow:var(--pro-shadow-lg)}
+#category-grid>*{border-radius:var(--pro-radius);overflow:hidden;transition:transform .35s,box-shadow .35s}
+#category-grid>*:hover{transform:translateY(-5px);box-shadow:var(--pro-shadow-lg)}
+.trust-strip{box-shadow:0 1px 0 rgba(0,0,0,.05)}
+.hero-frame{box-shadow:0 30px 70px rgba(0,0,0,.45)}
+
+/* search + sort toolbar */
+.pro-toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto 26px;padding:0 20px}
+.pro-search{position:relative;flex:1 1 280px;max-width:460px}
+.pro-search i{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:#999;font-size:14px}
+.pro-search input,.pro-toolbar select{width:100%;height:46px;border:1.5px solid #e6e6e6;border-radius:999px;background:#fff;font:inherit;font-size:14px;padding:0 18px;transition:border-color .2s,box-shadow .2s}
+.pro-search input{padding-left:42px}
+.pro-toolbar select{width:auto;min-width:190px;cursor:pointer}
+.pro-search input:focus,.pro-toolbar select:focus{outline:none;border-color:var(--pro-gold);box-shadow:0 0 0 4px rgba(200,155,60,.15)}
+.pro-count{font-size:13px;color:#777;width:100%;text-align:center;margin-top:-6px}
+.pro-empty{grid-column:1/-1;text-align:center;padding:60px 20px;color:#777}
+.pro-empty i{font-size:34px;color:var(--pro-gold);margin-bottom:12px;display:block}
+
+/* floating buttons */
+.pro-fab{position:fixed;right:18px;z-index:90;width:52px;height:52px;border-radius:50%;border:0;display:grid;place-items:center;color:#fff;font-size:22px;cursor:pointer;box-shadow:0 10px 26px rgba(0,0,0,.28);transition:transform .25s,opacity .25s;text-decoration:none}
+.pro-fab:hover{transform:translateY(-3px) scale(1.05)}
+.pro-wa{bottom:18px;background:#25d366}
+.pro-top{bottom:84px;background:var(--pro-ink);color:var(--pro-gold);font-size:16px;opacity:0;pointer-events:none}
+.pro-top.show{opacity:1;pointer-events:auto}
+
+/* scroll reveal (only active when JS runs) */
+.js-reveal .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.js-reveal .reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.js-reveal .reveal{opacity:1;transform:none;transition:none}*{animation:none!important}}
+
+/* footer */
+.site-footer a{transition:color .2s}
+.site-footer a:hover{color:var(--pro-gold)}
+@media(max-width:600px){.pro-toolbar select{width:100%}.pro-fab{width:48px;height:48px;right:14px}}
